@@ -95,16 +95,15 @@ export class Byer {
 
     public validateByer(): null | string {
         const validityChecks = [
-            this.validatePayment,
-            this.validateEmail,
-            this.validatePhone,
-            this.validateAddress,
+            this.validatePayment(),
+            this.validateEmail(),
+            this.validatePhone(),
+            this.validateAddress(),
         ]
 
         for (let check of validityChecks) {
-            let result = check();
-            if (typeof result === "string")
-                return result;
+            if (typeof check === "string")
+                return check;
         }
 
         return null;

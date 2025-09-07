@@ -15,7 +15,7 @@ export class Catalog {
     }
 
     public setProducts(products: IProduct[]): void {
-        this.products = products;
+        this.products = products.slice();
     }
 
     public setSelectedProduct(product: IProduct): void {
@@ -23,7 +23,7 @@ export class Catalog {
     }
 
     public getProducts(): IProduct[] {
-        return this.products;
+        return this.products.slice();
     }
 
     public getSelectedProduct(): IProduct | null {

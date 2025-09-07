@@ -10,7 +10,7 @@ export class ShoppingCart {
     }
 
     public getStoredProducts(): IProduct[] {
-        return this.products;
+        return this.products.slice();
     }
 
     public addProduct(product: IProduct): void {
