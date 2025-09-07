@@ -1,7 +1,7 @@
 import { IBuyer, TPayment } from "../../types/index"
 
 
-export class Byer {
+export class Buyer {
 
     private payment: TPayment;
     private email: string;
@@ -93,7 +93,7 @@ export class Byer {
         }
     }
 
-    public validateByer(): null | string {
+    public validateBuyer(): null | string {
         const validityChecks = [
             this.validatePayment(),
             this.validateEmail(),
