@@ -3,8 +3,8 @@ import { ensureElement } from "../../../utils/utils"
 
 
 export interface ICardBase {
-  title: string;
-  price: number | null;
+    title: string;
+    price: number | null;
 }
 
 
