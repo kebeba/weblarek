@@ -54,7 +54,7 @@ export class Buyer {
         }
     }
 
-    public flush(): void {
+    public reset(): void {
         this.payment = null;
         this.email = "";
         this.phone = "";

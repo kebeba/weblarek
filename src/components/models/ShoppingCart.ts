@@ -17,7 +17,7 @@ export class ShoppingCart {
         this.products.push(product);
     }
 
-    public popProduct(product: IProduct): void {
+    public removeProduct(product: IProduct): void {
         const productID = product.id;
         let removeIdx = null;
         
@@ -32,7 +32,7 @@ export class ShoppingCart {
         }
     }
 
-    public flush(): void {
+    public empty(): void {
         this.products = [];
     }
 

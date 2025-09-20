@@ -13,7 +13,7 @@ import { WebClient } from "./components/models/WebClient.ts"
 // тестирование моделей
 // ================================================================================================
 // создание пробного каталога товаров
-let catalog = new Catalog();
+const catalog = new Catalog();
 catalog.setProducts(apiProducts.items);
 catalog.setSelectedProduct(apiProducts.items[0]);
 console.log("Массив товаров из каталога:", catalog.getProducts());
@@ -24,12 +24,12 @@ console.log(
 );
 
 // создание пробной корзины товаров
-let cart = new ShoppingCart();
+const cart = new ShoppingCart();
 apiProducts.items.forEach(item => {
     cart.addProduct(item);
 });
 console.log("Массив товаров из корзины:", cart.getStoredProducts());
-cart.popProduct(apiProducts.items[2]);
+cart.removeProduct(apiProducts.items[2]);
 console.log("Массив товаров из корзины после удаления товара:", cart.getStoredProducts());
 console.log("Число товаров в корзине:", cart.countProducts());
 console.log("Суммарная стоимость товаров в корзине:", cart.countPrice());
@@ -37,11 +37,11 @@ console.log(
     "Добавлен ли товар с идентификатором c101ab44-ed99-4a54-990d-47aa2bb4e7d9 в корзину:",
     cart.isAdded("c101ab44-ed99-4a54-990d-47aa2bb4e7d9")
 );
-cart.flush()
+cart.empty()
 console.log("Массив товаров из корзины после очистки:", cart.getStoredProducts());
 
 // создание пробной модели покупателя
-let buyer = new Buyer();
+const buyer = new Buyer();
 buyer.setPayment("cash");
 buyer.setEmail("example@yandex.ru");
 console.log("Есть ли ошибка в заполнении способа оплаты:", buyer.validatePayment());
@@ -51,7 +51,7 @@ console.log("Есть ли ошибка в заполнении адреса д�
 buyer.setPhone("8(800)555-35-35");
 buyer.setAddress("г.Иваново, д. 12, кв. 19");
 console.log("Данные покупателя после заполнения:", buyer.getData());
-buyer.flush()
+buyer.reset()
 console.log("Данные покупателя после очистки:", buyer.getData());
 buyer.setData(
     {
@@ -82,9 +82,9 @@ apiCatalog.forEach(product => {
         cart.addProduct(product);
     }
 })
-let orderItems = cart.getStoredProducts().map(item => item.id);
-let userData = buyer.getData();
-let orderRsp = await client.postOrder(
+const orderItems = cart.getStoredProducts().map(item => item.id);
+const userData = buyer.getData();
+const orderRsp = await client.postOrder(
     {
         payment: userData.payment,
         email: userData.email,
