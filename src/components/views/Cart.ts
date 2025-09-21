@@ -6,6 +6,7 @@ import { ensureElement } from "../../utils/utils"
 interface ICart {
     contents: HTMLElement[] | string;
     price: number;
+    isBtnDisabled: boolean;
 }
 
 
@@ -33,6 +34,14 @@ export class CartView extends Component<ICart> {
 
     set price(value: number) {
         this.totalPrice.textContent = `${String(value)} синапсов`;
+    }
+
+    set isBtnDisabled(value: boolean) {
+        if (value) {
+            this.makeOrderButton.disabled = true;
+        } else {
+            this.makeOrderButton.disabled = false;
+        }
     }
 
 }

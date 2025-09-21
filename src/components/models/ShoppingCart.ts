@@ -1,11 +1,12 @@
 import { IProduct } from "../../types/index"
+import { IEvents } from "../base/Events"
 
 
 export class ShoppingCart {
 
     private products: IProduct[];
 
-    constructor(products: IProduct[] = []) {
+    constructor(protected events: IEvents, products: IProduct[] = []) {
         this.products = products;
     }
 
@@ -15,6 +16,7 @@ export class ShoppingCart {
 
     public addProduct(product: IProduct): void {
         this.products.push(product);
+        this.events.emit("cart:update");
     }
 
     public removeProduct(product: IProduct): void {
@@ -30,10 +32,13 @@ export class ShoppingCart {
         if (removeIdx !== null) {
             this.products.splice(removeIdx, 1);
         }
+
+        this.events.emit("cart:update");
     }
 
     public empty(): void {
         this.products = [];
+        this.events.emit("cart:update");
     }
 
     public countPrice(): number {

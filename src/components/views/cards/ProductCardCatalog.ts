@@ -19,6 +19,7 @@ export class ProductCardCatalogView extends ProductCardBaseView<ICardCatalog> {
         super(container);
 
         this.productCategory = ensureElement<HTMLElement>(".card__category", this.container);
+        this.productCategory.className = "card__category";
         this.productImage = ensureElement<HTMLImageElement>(".card__image", this.container);
 
         this.container.addEventListener("click", () => {
@@ -28,8 +29,8 @@ export class ProductCardCatalogView extends ProductCardBaseView<ICardCatalog> {
 
     set category(value: string) {
         this.productCategory.textContent = value;
-        const categoryKey = value as keyof typeof categoryMap; 
-        this.productCategory.classList.toggle(categoryMap[categoryKey]);
+        const categoryKey = value as keyof typeof categoryMap;
+        this.productCategory.classList.add(categoryMap[categoryKey]);
     }
     
     set image(value: string) {

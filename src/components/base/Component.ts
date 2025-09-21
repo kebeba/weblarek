@@ -1,3 +1,6 @@
+import { CDN_URL } from "../../utils/constants"
+
+
 /**
  * Базовый компонент
  */
@@ -11,7 +14,7 @@ export abstract class Component<T> {
     // Установить изображение с альтернативным текстом
     protected setImage(element: HTMLImageElement, src: string, alt?: string) {
         if (element) {
-            element.src = src;
+            element.src = `${CDN_URL}/${src}`;
             if (alt) {
                 element.alt = alt;
             }
