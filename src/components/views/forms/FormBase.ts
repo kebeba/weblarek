@@ -21,16 +21,18 @@ export class FormBaseView<FormT extends IFormBase = IFormBase> extends Component
 
         this.container.addEventListener("submit", (e) => {
             e.preventDefault();
-            this.events.emit("submitButton:submit");
+            this.events.emit("form:submit", {formType: this.container.getAttribute("name")});
         });
     }
 
     set error(value: string | null) {
-        let errorText: string = "";
         if (value !== null) {
-            errorText = value;
+            this.formError.textContent = value;
+            this.submitButton.disabled = true;
+        } else {
+            this.formError.textContent = "";
+            this.submitButton.disabled = false;
         }
-        this.formError.textContent = errorText;
     }
 
 }

@@ -18,11 +18,12 @@ export class Catalog {
 
     public setProducts(products: IProduct[]): void {
         this.products = products.slice();
+        this.events.emit("products:changed");
     }
 
     public setSelectedProduct(product: IProduct): void {
         this.selectedProduct = product;
-        this.events.emit("selectedProduct:changed");
+        this.events.emit("selected:changed");
     }
 
     public getProducts(): IProduct[] {

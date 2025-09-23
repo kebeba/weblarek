@@ -31,9 +31,9 @@ export class OrderFormView extends FormBaseView<IOrderForm> {
             this.events.emit("payment:card")
         });
         
-        this.container.addEventListener("input", (e) => {
+        this.container.addEventListener("change", (e) => {
             if (e.target === this.addressInput) {
-                this.events.emit("address:change", {address: this.addressInput.value})
+                this.events.emit("address:changed", {address: this.addressInput.value})
             }
         });
     }
@@ -45,10 +45,12 @@ export class OrderFormView extends FormBaseView<IOrderForm> {
                 this.cardPaymentButton.classList.remove("button_alt-active");
                 return;
             case "cash":
-                this.cashPaymentButton.classList.toggle("button_alt-active");
+                this.cashPaymentButton.classList.add("button_alt-active");
+                this.cardPaymentButton.classList.remove("button_alt-active");
                 return;
             case "card":
-                this.cardPaymentButton.classList.toggle("button_alt-active");
+                this.cardPaymentButton.classList.add("button_alt-active");
+                this.cashPaymentButton.classList.remove("button_alt-active");
                 return;
         }
     }

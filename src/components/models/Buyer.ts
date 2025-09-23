@@ -1,4 +1,5 @@
 import { IBuyer, TPayment } from "../../types/index"
+import { IEvents } from "../base/Events"
 
 
 export class Buyer {
@@ -9,12 +10,13 @@ export class Buyer {
     private address: string;
     
     constructor(
+        protected events: IEvents,
         data: IBuyer = { 
             payment: null,
             email: "",
             phone: "",
             address: "",
-        }
+        },
     ) {
         this.payment = data.payment;
         this.email = data.email;
@@ -24,18 +26,22 @@ export class Buyer {
 
     public setPayment(payment: TPayment): void {
         this.payment = payment;
+        this.events.emit("payment:setted");
     }
 
     public setEmail(email: string): void {
         this.email = email;
+        this.events.emit("email:setted");
     }
 
     public setPhone(phone: string): void {
         this.phone = phone;
+        this.events.emit("phone:setted");
     }
 
     public setAddress(address: string): void {
         this.address = address;
+        this.events.emit("address:setted");
     }
 
     public setData(data: IBuyer): void {

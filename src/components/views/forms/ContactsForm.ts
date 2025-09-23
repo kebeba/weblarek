@@ -20,12 +20,12 @@ export class ContactsFormView extends FormBaseView<IContactsForm> {
         this.emailInput = ensureElement<HTMLInputElement>("input[name='email']", this.container);
         this.phoneInput = ensureElement<HTMLInputElement>("input[name='phone']", this.container);
 
-        this.container.addEventListener("input", (e) => {
+        this.container.addEventListener("change", (e) => {
             if (e.target === this.emailInput) {
-                this.events.emit("contacts:changed", {field: "email", value: this.emailInput.value});
+                this.events.emit("email:changed", {email: this.emailInput.value})
             }
             if (e.target === this.phoneInput) {
-                this.events.emit("contacts:changed", {field: "phone", value: this.phoneInput.value});
+                this.events.emit("phone:changed", {phone: this.phoneInput.value})
             }
         });
     }
