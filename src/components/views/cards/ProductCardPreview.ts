@@ -2,6 +2,7 @@ import { ICardBase, ProductCardBaseView } from "./ProductCardBase"
 import { IEvents } from "../../base/Events"
 import { categoryMap } from "../../../utils/constants"
 import { ensureElement } from "../../../utils/utils"
+import { Events } from "../../../utils/constants"
 
 
 interface ICardPreview extends ICardBase {
@@ -31,7 +32,7 @@ export class ProductCardPreviewView extends ProductCardBaseView<ICardPreview> {
 
         this.productButton.addEventListener("click", () => {
             if (!this.productButton.disabled) {
-                this.events.emit("card:preview-pushed", { id: this.container.dataset.id });
+                this.events.emit(Events.CARD.PUSHED, { id: this.container.dataset.id });
             }
         });
     }
@@ -55,11 +56,7 @@ export class ProductCardPreviewView extends ProductCardBaseView<ICardPreview> {
     }
 
     set isBtnDisabled(value: boolean) {
-        if (value) {
-            this.productButton.disabled = true;
-        } else {
-            this.productButton.disabled = false;
-        }
+        this.productButton.disabled = value;
     }
 
 }

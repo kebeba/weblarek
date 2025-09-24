@@ -2,6 +2,7 @@ import { ICardBase, ProductCardBaseView } from "./ProductCardBase"
 import { IEvents } from "../../base/Events"
 import { categoryMap } from "../../../utils/constants"
 import { ensureElement } from "../../../utils/utils"
+import { Events } from "../../../utils/constants"
 
 
 interface ICardCatalog extends ICardBase {
@@ -23,7 +24,7 @@ export class ProductCardCatalogView extends ProductCardBaseView<ICardCatalog> {
         this.productImage = ensureElement<HTMLImageElement>(".card__image", this.container);
 
         this.container.addEventListener("click", () => {
-            this.events.emit("card:open-preview", {id: this.container.dataset.id});
+            this.events.emit(Events.CARD.OPEN, {id: this.container.dataset.id});
         });
     }
 

@@ -1,5 +1,6 @@
 import { IBuyer, TPayment } from "../../types/index"
 import { IEvents } from "../base/Events"
+import { Events } from "../../utils/constants"
 
 
 export class Buyer {
@@ -26,22 +27,22 @@ export class Buyer {
 
     public setPayment(payment: TPayment): void {
         this.payment = payment;
-        this.events.emit("payment:setted");
+        this.events.emit(Events.PAYMENT.SETTED);
     }
 
     public setEmail(email: string): void {
         this.email = email;
-        this.events.emit("email:setted");
+        this.events.emit(Events.EMAIL.SETTED);
     }
 
     public setPhone(phone: string): void {
         this.phone = phone;
-        this.events.emit("phone:setted");
+        this.events.emit(Events.PHONE.SETTED);
     }
 
     public setAddress(address: string): void {
         this.address = address;
-        this.events.emit("address:setted");
+        this.events.emit(Events.ADDRESS.SETTED);
     }
 
     public setData(data: IBuyer): void {

@@ -1,6 +1,7 @@
 import { Component } from "../base/Component";
 import { IEvents } from "../base/Events"
 import { ensureElement } from "../../utils/utils"
+import { Events } from "../../utils/constants"
 
 
 interface IModal {
@@ -21,12 +22,12 @@ export class ModalWindowView extends Component<IModal> {
         this.closeButton = ensureElement<HTMLButtonElement>(".modal__close", this.container);
 
         this.closeButton.addEventListener("click", () => {
-            this.events.emit("modal:close");
+            this.events.emit(Events.MODAL.CLOSE);
         });
         
         this.container.addEventListener("click", (e) => {
             if (e.target === e.currentTarget) {
-                this.events.emit("modal:close");
+                this.events.emit(Events.MODAL.CLOSE);
             }
         });
     }
@@ -35,11 +36,19 @@ export class ModalWindowView extends Component<IModal> {
         this.windowContents.replaceChildren(element);
     }
 
+    _handleEscape = (evt: KeyboardEvent) => {
+        if (evt.key === "Escape") {
+            this.isOpen = false;
+        }
+    };
+    
     set isOpen(value: boolean) {
         if (value) {
             this.container.classList.add("modal_active");
+            document.addEventListener("keydown", this._handleEscape);
         } else {
             this.container.classList.remove("modal_active");
+            document.removeEventListener("keydown", this._handleEscape);
         }
     }
 

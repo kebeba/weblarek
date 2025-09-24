@@ -1,6 +1,7 @@
 import { Component } from "../base/Component"
 import { IEvents } from "../base/Events"
 import { ensureElement } from "../../utils/utils"
+import { Events } from "../../utils/constants"
 
 
 interface IHeader {
@@ -20,7 +21,7 @@ export class HeaderView extends Component<IHeader> {
         this.cartButton = ensureElement<HTMLButtonElement>(".header__basket", this.container);
 
         this.cartButton.addEventListener("click", () => {
-            this.events.emit("cart:open")
+            this.events.emit(Events.CART.OPEN)
         })
     }
 

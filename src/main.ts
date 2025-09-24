@@ -1,7 +1,7 @@
 import './scss/styles.scss';
 
-import {Api} from "./components/base/Api.ts"
 import { API_URL } from "./utils/constants.ts"
+import { Events } from "./utils/constants.ts"
 
 import { cloneTemplate } from "./utils/utils.ts"
 import { EventEmitter } from "./components/base/Events.ts"
@@ -21,7 +21,7 @@ import { ProductCardCartView } from './components/views/cards/ProductCardCart.ts
 import { ProductCardCatalogView } from "./components/views/cards/ProductCardCatalog.ts"
 import { ProductCardPreviewView } from "./components/views/cards/ProductCardPreview.ts"
 
-import { WebClient } from "./components/models/WebClient.ts"
+import { WebClient } from "./components/services/WebClient.ts"
 import { IProduct } from './types/index.ts';
 
 
@@ -51,42 +51,51 @@ function renderShoppingCartContents():HTMLElement {
 }
 
 
-function renderOrderForm(): void {
-    const userData = userModel.getData();
+function validateOrderForm(): string | null {
     let error = userModel.validatePayment();
     if (error === null) {
         error = userModel.validateAddress();
     }
+    return error
+}
+
+
+function renderOrderForm(): void {
+    const userData = userModel.getData();
     modalWindowView.render({
         contents: orderFormView.render({
             payment: userData.payment,
             address: userData.address,
-            error: error,
+            error: validateOrderForm(),
         }),
         isOpen: true,
     });
+}
+
+
+function validateContactsForm(): string | null {
+    let error = userModel.validateEmail();
+    if (error === null) {
+        error = userModel.validatePhone();
+    }
+    return error
 }
 
 
 function renderContactsForm(): void {
     const userData = userModel.getData();
-    let error = userModel.validateEmail();
-    if (error === null) {
-        error = userModel.validatePhone();
-    }
     modalWindowView.render({
         contents: contactsFormView.render({
             email: userData.email,
             phone: userData.phone,
-            error: error,
+            error: validateContactsForm(),
         }),
         isOpen: true,
     });
 }
 
 
-const api = new Api(API_URL);
-const client = new WebClient(api);
+const client = new WebClient(API_URL);
 
 const events = new EventEmitter();
 
@@ -104,7 +113,7 @@ const contactsFormView = new ContactsFormView(events, cloneTemplate("#contacts")
 const orderMadeView = new OrderMadeView(events, cloneTemplate("#success") as HTMLElement);
 
 
-events.on("products:changed", () => {
+events.on(Events.CATALOG.CHANGED, () => {
     const productCards: HTMLElement[] = catalogModel.getProducts().map(product => {
         const productCardTemplate = cloneTemplate("#card-catalog");
         productCardTemplate.dataset.id = product.id;
@@ -119,18 +128,18 @@ events.on("products:changed", () => {
     catalogView.cards = productCards;
 });
 
-events.on("cart:open", () => {
+events.on(Events.CART.OPEN, () => {
     modalWindowView.render({
         contents: renderShoppingCartContents(),
         isOpen: true,
     });
 });
 
-events.on("cart:update", () => {
+events.on(Events.CART.UPDATE, () => {
     headerView.counter = cartModel.countProducts();
 });
 
-events.on<{id: string}>("card:remove-from-cart", ({id}) => {
+events.on<{id: string}>(Events.CARD.REMOVE, ({id}) => {
     const product = catalogModel.findProduct(id) as IProduct;
     cartModel.removeProduct(product);
     modalWindowView.render({
@@ -139,12 +148,12 @@ events.on<{id: string}>("card:remove-from-cart", ({id}) => {
     });
 });
 
-events.on<{id: string}>("card:open-preview", ({id}) => {
+events.on<{id: string}>(Events.CARD.OPEN, ({id}) => {
     const product = catalogModel.findProduct(id);
     catalogModel.setSelectedProduct(product as IProduct);
 });
 
-events.on<{id: string}>("card:preview-pushed", ({id}) => {
+events.on<{id: string}>(Events.CARD.PUSHED, ({id}) => {
     const product = catalogModel.findProduct(id) as IProduct;
     
     if (cartModel.isAdded(id)) {
@@ -156,7 +165,7 @@ events.on<{id: string}>("card:preview-pushed", ({id}) => {
     catalogModel.setSelectedProduct(product);
 });
 
-events.on("selected:changed", () => {
+events.on(Events.CATALOG.SELECTED_CHANGED, () => {
     const selectedProduct = catalogModel.getSelectedProduct() as IProduct;
     const previewCardTemplate = cloneTemplate("#card-preview");
     previewCardTemplate.dataset.id = selectedProduct.id;
@@ -188,83 +197,76 @@ events.on("selected:changed", () => {
     });
 });
 
-events.on("order:make", () => {
+events.on(Events.ORDER.MAKE, () => {
     renderOrderForm();
 });
 
-events.on("payment:card", () => {
+events.on(Events.PAYMENT.CARD, () => {
     userModel.setPayment("card");
 });
 
-events.on("payment:cash", () => {
+events.on(Events.PAYMENT.CASH, () => {
     userModel.setPayment("cash");
 });
 
-events.on("payment:setted", () => {
+events.on(Events.PAYMENT.SETTED, () => {
     renderOrderForm();
 });
 
-events.on<{address: string}>("address:changed", ({address}) => {
+events.on<{address: string}>(Events.ADDRESS.CHANGED, ({address}) => {
     userModel.setAddress(address);
 });
 
-events.on("address:setted", () => {
-    let error = userModel.validatePayment();
-    if (error === null) {
-        error = userModel.validateAddress();
-    }
-    modalWindowView.render({
-        contents: orderFormView.render({
-            error: error,
-        }),
-        isOpen: true,
-    });
+events.on(Events.ADDRESS.SETTED, () => {
+    orderFormView.error = validateOrderForm();
 });
 
-events.on<{formType: string}>("form:submit", async ({formType}) => {
+events.on<{formType: string}>(Events.FORM.SUBMIT, async ({formType}) => {
     if (formType === "contacts") {
         const orderItems = cartModel.getStoredProducts().map(product => product.id);
         const userData = userModel.getData();
-        const orderRsp = await client.postOrder(
-            {
+        try {
+            const orderRsp = await client.postOrder({
                 payment: userData.payment,
                 email: userData.email,
                 phone: userData.phone,
                 address: userData.address,
                 items: orderItems,
                 total: cartModel.countPrice(),
-            }
-        );
-        console.log("Результат формирования пробного заказа:", orderRsp);
+            });
+            console.log("Результат формирования заказа:", orderRsp);
         
-        modalWindowView.render({
-            contents: orderMadeView.render({
-                price: cartModel.countPrice(),
-            }),
-        isOpen: true,
-        });
+            modalWindowView.render({
+                contents: orderMadeView.render({
+                    price: cartModel.countPrice(),
+                }),
+            isOpen: true,
+            });
+        } catch (err) {
+            console.log("При формировании заказа возникла ошибка:", err);
+        }
     } else {
         renderContactsForm();
     }
 });
 
-events.on<{email: string}>("email:changed", ({email}) => {
+events.on<{email: string}>(Events.EMAIL.CHANGED, ({email}) => {
     userModel.setEmail(email);
 });
 
-events.on<{phone: string}>("phone:changed", ({phone}) => {
+events.on<{phone: string}>(Events.PHONE.CHANGED, ({phone}) => {
     userModel.setPhone(phone);
 });
 
-events.on("email:setted", () => {
-    renderContactsForm();
+events.on(Events.EMAIL.SETTED, () => {
+    contactsFormView.error = validateContactsForm();
 });
 
-events.on("phone:setted", () => {
-    renderContactsForm();
+events.on(Events.PHONE.SETTED, () => {
+    contactsFormView.error = validateContactsForm();
 });
 
-events.on("catalog:return", () => {
+events.on(Events.CATALOG.RETURN, () => {
     cartModel.empty();
     userModel.reset();
     modalWindowView.render({
@@ -272,10 +274,14 @@ events.on("catalog:return", () => {
     });
 });
 
-events.on("modal:close", () => {
+events.on(Events.MODAL.CLOSE, () => {
     modalWindowView.render({
         isOpen: false,
     });
 });
 
-catalogModel.setProducts(await client.getCatalog());
+try {
+    catalogModel.setProducts(await client.getCatalog());
+} catch (err) {
+    console.log("При получении каталога товаров возникла ошибка:", err);
+}

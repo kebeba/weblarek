@@ -16,3 +16,47 @@ export const categoryMap = {
 }
 
 export const settings = {};
+
+export const Events = {
+    CATALOG: {
+        CHANGED: "products:changed",
+        SELECTED_CHANGED: "selected:changed",
+        RETURN: "catalog:return",
+    },
+    CART: {
+        OPEN: "cart:open",
+        UPDATE: "cart:update",
+    },
+    CARD: {
+        OPEN: "card:open-preview",
+        PUSHED: "card:preview-pushed",
+        REMOVE: "card:remove-from-cart",
+
+    },
+    FORM: {
+        SUBMIT: "form:submit",
+    },
+    PAYMENT: {
+        CARD: "payment:card",
+        CASH: "payment:cash",
+        SETTED: "payment:setted",
+    },
+    ADDRESS: {
+        CHANGED: "address:changed",
+        SETTED: "address:setted",
+    },
+    EMAIL: {
+        CHANGED: "email:changed",
+        SETTED: "email:setted"
+    },
+    PHONE: {
+        CHANGED: "phone:changed",
+        SETTED: "phone:setted"
+    },
+    ORDER: {
+        MAKE: "order:make"
+    },
+    MODAL: {
+        CLOSE: "modal:close"
+    }
+}

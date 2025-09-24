@@ -1,6 +1,7 @@
 import { ICardBase, ProductCardBaseView } from "./ProductCardBase"
 import { IEvents } from "../../base/Events"
 import { ensureElement } from "../../../utils/utils"
+import { Events } from "../../../utils/constants"
 
 
 interface ICardCart extends ICardBase {
@@ -20,7 +21,7 @@ export class ProductCardCartView extends ProductCardBaseView<ICardCart> {
         this.productDeleteButton = ensureElement<HTMLButtonElement>(".basket__item-delete", this.container);
 
         this.productDeleteButton.addEventListener("click", () => {
-            this.events.emit("card:remove-from-cart", {id: this.container.dataset.id})
+            this.events.emit(Events.CARD.REMOVE, {id: this.container.dataset.id})
 
         });
     }

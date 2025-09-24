@@ -2,6 +2,7 @@ import { IFormBase, FormBaseView } from "./FormBase"
 import {TPayment} from "../../../types"
 import { ensureElement } from "../../../utils/utils"
 import { IEvents } from "../../base/Events";
+import { Events } from "../../../utils/constants"
 
 
 interface IOrderForm extends IFormBase {
@@ -24,16 +25,16 @@ export class OrderFormView extends FormBaseView<IOrderForm> {
         this.addressInput = ensureElement<HTMLInputElement>("input[name='address']", this.container);
 
         this.cashPaymentButton.addEventListener("click", () => {
-            this.events.emit("payment:cash")
+            this.events.emit(Events.PAYMENT.CASH)
         });
 
         this.cardPaymentButton.addEventListener("click", () => {
-            this.events.emit("payment:card")
+            this.events.emit(Events.PAYMENT.CARD)
         });
         
-        this.container.addEventListener("change", (e) => {
+        this.container.addEventListener("input", (e) => {
             if (e.target === this.addressInput) {
-                this.events.emit("address:changed", {address: this.addressInput.value})
+                this.events.emit(Events.ADDRESS.CHANGED, {address: this.addressInput.value})
             }
         });
     }

@@ -1,5 +1,6 @@
 import { IProduct } from "../../types/index"
 import { IEvents } from "../base/Events"
+import { Events } from "../../utils/constants"
 
 
 export class Catalog {
@@ -18,12 +19,12 @@ export class Catalog {
 
     public setProducts(products: IProduct[]): void {
         this.products = products.slice();
-        this.events.emit("products:changed");
+        this.events.emit(Events.CATALOG.CHANGED);
     }
 
     public setSelectedProduct(product: IProduct): void {
         this.selectedProduct = product;
-        this.events.emit("selected:changed");
+        this.events.emit(Events.CATALOG.SELECTED_CHANGED);
     }
 
     public getProducts(): IProduct[] {

@@ -1,6 +1,7 @@
 import { Component } from "../base/Component";
 import { IEvents } from "../base/Events"
 import { ensureElement } from "../../utils/utils"
+import { Events } from "../../utils/constants"
 
 
 interface ICart {
@@ -24,7 +25,7 @@ export class CartView extends Component<ICart> {
         this.makeOrderButton = ensureElement<HTMLButtonElement>(".basket__button", this.container);
 
         this.makeOrderButton.addEventListener("click", () => {
-            this.events.emit("order:make");
+            this.events.emit(Events.ORDER.MAKE);
         });
     }
 
@@ -37,11 +38,7 @@ export class CartView extends Component<ICart> {
     }
 
     set isBtnDisabled(value: boolean) {
-        if (value) {
-            this.makeOrderButton.disabled = true;
-        } else {
-            this.makeOrderButton.disabled = false;
-        }
+        this.makeOrderButton.disabled = value;
     }
 
 }

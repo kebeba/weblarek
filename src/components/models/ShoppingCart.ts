@@ -1,5 +1,6 @@
 import { IProduct } from "../../types/index"
 import { IEvents } from "../base/Events"
+import { Events } from "../../utils/constants"
 
 
 export class ShoppingCart {
@@ -33,12 +34,12 @@ export class ShoppingCart {
             this.products.splice(removeIdx, 1);
         }
 
-        this.events.emit("cart:update");
+        this.events.emit(Events.CART.UPDATE);
     }
 
     public empty(): void {
         this.products = [];
-        this.events.emit("cart:update");
+        this.events.emit(Events.CART.UPDATE);
     }
 
     public countPrice(): number {

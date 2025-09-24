@@ -1,6 +1,7 @@
 import { Component } from "../base/Component";
 import { IEvents } from "../base/Events"
 import { ensureElement } from "../../utils/utils"
+import { Events } from "../../utils/constants"
 
 
 interface IOrderMade {
@@ -20,7 +21,7 @@ export class OrderMadeView extends Component<IOrderMade> {
         this.backToCatalogButton = ensureElement<HTMLButtonElement>(".order-success__close", this.container);
 
         this.backToCatalogButton.addEventListener("click", () => {
-            this.events.emit("catalog:return");
+            this.events.emit(Events.CATALOG.RETURN);
         });
     }
 

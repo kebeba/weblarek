@@ -1,6 +1,7 @@
 import { Component } from "../../base/Component"
 import { ensureElement } from "../../../utils/utils"
 import { IEvents } from "../../base/Events";
+import { Events } from "../../../utils/constants"
 
 
 export interface IFormBase {
@@ -21,7 +22,7 @@ export class FormBaseView<FormT extends IFormBase = IFormBase> extends Component
 
         this.container.addEventListener("submit", (e) => {
             e.preventDefault();
-            this.events.emit("form:submit", {formType: this.container.getAttribute("name")});
+            this.events.emit(Events.FORM.SUBMIT, {formType: this.container.getAttribute("name")});
         });
     }
 

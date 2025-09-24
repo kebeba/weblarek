@@ -1,6 +1,7 @@
 import { IFormBase, FormBaseView } from "./FormBase"
 import { ensureElement } from "../../../utils/utils"
 import { IEvents } from "../../base/Events";
+import { Events } from "../../../utils/constants"
 
 
 interface IContactsForm extends IFormBase {
@@ -20,12 +21,12 @@ export class ContactsFormView extends FormBaseView<IContactsForm> {
         this.emailInput = ensureElement<HTMLInputElement>("input[name='email']", this.container);
         this.phoneInput = ensureElement<HTMLInputElement>("input[name='phone']", this.container);
 
-        this.container.addEventListener("change", (e) => {
+        this.container.addEventListener("input", (e) => {
             if (e.target === this.emailInput) {
-                this.events.emit("email:changed", {email: this.emailInput.value})
+                this.events.emit(Events.EMAIL.CHANGED, {email: this.emailInput.value})
             }
             if (e.target === this.phoneInput) {
-                this.events.emit("phone:changed", {phone: this.phoneInput.value})
+                this.events.emit(Events.PHONE.CHANGED, {phone: this.phoneInput.value})
             }
         });
     }
